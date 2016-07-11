@@ -12,3 +12,6 @@ commands:
     sdbint:
       description: 'Changes the interval of messages being displayed'
       permission: 'sdbint'
+    sbignore:
+      description: 'Toogles if you will recive the messages'
+      permission: 'sbignore'
