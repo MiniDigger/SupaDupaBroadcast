@@ -23,6 +23,10 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>SupdDupaBroadcast</finalName>
+    </build>
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
