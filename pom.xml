@@ -24,7 +24,7 @@
     </dependencies>
 
     <build>
-        <finalName>SupdDupaBroadcast</finalName>
+        <finalName>SupaDupaBroadcast</finalName>
     </build>
 
     <repositories>
