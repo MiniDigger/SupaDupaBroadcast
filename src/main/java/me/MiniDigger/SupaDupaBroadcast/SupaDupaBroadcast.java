@@ -71,12 +71,12 @@ public class SupaDupaBroadcast extends JavaPlugin {
         BaseComponent[] bc = ComponentSerializer.parse( msg );
         Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> p.spigot().sendMessage( bc ) );
 
-        StringBuilder sb = new StringBuilder();
-        for ( BaseComponent b : bc ) {
-            sb.append( b.toLegacyText() );
-        }
-
         if ( getConfig().isBoolean( "console-output" ) ) {
+            StringBuilder sb = new StringBuilder();
+            for ( BaseComponent b : bc ) {
+                sb.append( b.toLegacyText() );
+            }
+            
             Bukkit.getConsoleSender().sendMessage( sb.toString() );
         }
     }
