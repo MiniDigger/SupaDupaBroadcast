@@ -50,7 +50,7 @@ public class SupaDupaBroadcast extends JavaPlugin {
                     String fmsg = parseMsg( msg );
                     Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> p.sendMessage( fmsg ) );
 
-                    if ( getConfig().getBoolean( "console-output" ) == true ) {
+                    if ( getConfig().getBoolean( "console-output" ) ) {
                         Bukkit.getConsoleSender().sendMessage( msg );
                     }
                 }
@@ -71,7 +71,7 @@ public class SupaDupaBroadcast extends JavaPlugin {
         BaseComponent[] bc = ComponentSerializer.parse( msg );
         Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> p.spigot().sendMessage( bc ) );
 
-        if ( getConfig().getBoolean( "console-output" ) == true ) {
+        if ( getConfig().getBoolean( "console-output" ) ) {
             StringBuilder sb = new StringBuilder();
             for ( BaseComponent b : bc ) {
                 sb.append( b.toLegacyText() );
