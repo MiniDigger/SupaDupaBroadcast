@@ -48,10 +48,12 @@ public class SupaDupaBroadcast extends JavaPlugin {
                     broadCastJson( msg );
                 } else {
                     String fmsg = parseMsg( msg );
-                    Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> p.sendMessage( fmsg ) );
+                    Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> {
+                        p.sendMessage( fmsg.replace( "%player", p.getName() ) );
+                    });
 
-                    if ( getConfig().getBoolean( "console-output" ) ) {
-                        Bukkit.getConsoleSender().sendMessage( msg );
+                    if (getConfig().getBoolean("console-output")) {
+                        Bukkit.getConsoleSender().sendMessage( msg.replace( "%player", "Console" ) );
                     }
                 }
 
@@ -67,17 +69,20 @@ public class SupaDupaBroadcast extends JavaPlugin {
     private void broadCastJson( String msg ) {
         msg = msg.replace( "json:", "" );
 
+        String finalMsg = msg;
+        Bukkit.getOnlinePlayers().stream().filter(p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach(p -> {
+            BaseComponent[] bc = ComponentSerializer.parse( finalMsg.replace("%player", p.getName() ) );
+            p.spigot().sendMessage( bc );
+        });
 
         BaseComponent[] bc = ComponentSerializer.parse( msg );
-        Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> p.spigot().sendMessage( bc ) );
-
-        if ( getConfig().getBoolean( "console-output" ) ) {
+        if (getConfig().getBoolean("console-output")) {
             StringBuilder sb = new StringBuilder();
             for ( BaseComponent b : bc ) {
                 sb.append( b.toLegacyText() );
             }
             
-            Bukkit.getConsoleSender().sendMessage( sb.toString() );
+            Bukkit.getConsoleSender().sendMessage( sb.toString().replace( "%player", "Console" ) );
         }
     }
 
@@ -102,6 +107,7 @@ public class SupaDupaBroadcast extends JavaPlugin {
         dontBugMe = new ArrayList<>();
         dontBugMe.addAll( getConfig().getStringList( "dont-bug-me" ).stream().map( UUID::fromString ).collect( Collectors.toList() ) );
     }
+
 
     private String parseMsg( String msg ) {
         msg = ChatColor.translateAlternateColorCodes( '&', msg );
