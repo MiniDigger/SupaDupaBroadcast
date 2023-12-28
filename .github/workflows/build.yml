@@ -25,5 +25,5 @@ jobs:
         run: ./gradlew build
 
       - name: Publish Artifact
-        if: startsWith(github.ref, 'refs/heads/master')
+        if: github.repository_owner == 'MiniDigger'
         run: ./gradlew publishPlugin

@@ -15,18 +15,8 @@ dependencies {
 }
 
 group = "me.MiniDigger"
-version = "1.1-SNAPSHOT-${latestCommitHash()}"
 description = "SupaDupaBroadcast"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
-
-fun latestCommitHash(): String {
-    val byteOut = ByteArrayOutputStream()
-    exec {
-        commandLine = listOf("git", "rev-parse", "--short", "HEAD")
-        standardOutput = byteOut
-    }
-    return byteOut.toString(Charsets.UTF_8.name()).trim()
-}
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
@@ -44,17 +34,47 @@ tasks {
     }
 }
 
-hangarPublish {
-    publications.register("plugin") {
-        version = project.version as String
-        id = "SupaDupaBroadcast"
-        channel = if ((project.version as String).contains("SNAPSHOT")) "Snapshot" else "Release"
-        apiKey = System.getenv("HANGAR_API_TOKEN")
+fun executeGitCommand(vararg command: String): String {
+    val byteOut = ByteArrayOutputStream()
+    exec {
+        commandLine = listOf("git", *command)
+        standardOutput = byteOut
+    }
+    return byteOut.toString(Charsets.UTF_8.name()).trim()
+}
 
-        platforms {
-            paper {
-                jar = tasks.jar.flatMap { it.archiveFile }
-                platformVersions = listOf("1.9.0-1.20.4")
+fun latestCommitHash(): String {
+    return executeGitCommand("rev-parse", "--short", "HEAD")
+}
+
+fun latestCommitMessage(): String {
+    return executeGitCommand("log", "-1", "--pretty=%B")
+}
+
+fun branchName(): String {
+    return executeGitCommand("rev-parse", "--abbrev-ref", "HEAD")
+}
+
+val branch = branchName()
+val commitHash = latestCommitHash()
+val baseVersion = project.version as String
+val isRelease = !baseVersion.contains("-")
+val isMainBranch = branch == "master"
+val suffixedVersion = if (isRelease) baseVersion else "$baseVersion+$commitHash"
+
+if (isMainBranch) {
+    hangarPublish {
+        publications.register("plugin") {
+            version = suffixedVersion
+            id = "SupaDupaBroadcast"
+            channel = if (!isRelease) "Snapshot" else "Release"
+            apiKey = System.getenv("HANGAR_API_TOKEN")
+
+            platforms {
+                paper {
+                    jar = tasks.jar.flatMap { it.archiveFile }
+                    platformVersions = listOf("1.9.0-1.20.4")
+                }
             }
         }
     }
