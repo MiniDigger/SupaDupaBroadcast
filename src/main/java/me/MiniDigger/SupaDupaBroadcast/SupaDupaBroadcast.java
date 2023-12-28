@@ -24,6 +24,8 @@ public class SupaDupaBroadcast extends JavaPlugin {
 
     private List<UUID> dontBugMe;
 
+    private List<String> dontInWorlds;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -48,7 +50,7 @@ public class SupaDupaBroadcast extends JavaPlugin {
                     broadCastJson( msg );
                 } else {
                     String fmsg = parseMsg( msg );
-                    Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach( p -> {
+                    Bukkit.getOnlinePlayers().stream().filter( p -> !dontBugMe.contains( p.getUniqueId() ) && !dontInWorlds.contains( p.getWorld().getName() ) ).forEach( p -> {
                         p.sendMessage( fmsg.replace( "%player", p.getName() ) );
                     });
 
@@ -70,42 +72,45 @@ public class SupaDupaBroadcast extends JavaPlugin {
         msg = msg.replace( "json:", "" );
 
         String finalMsg = msg;
-        Bukkit.getOnlinePlayers().stream().filter(p -> !dontBugMe.contains( p.getUniqueId() ) ).forEach(p -> {
-            BaseComponent[] bc = ComponentSerializer.parse( finalMsg.replace("%player", p.getName() ) );
-            p.spigot().sendMessage( bc );
+        Bukkit.getOnlinePlayers().stream().filter(p -> !dontBugMe.contains( p.getUniqueId() ) && !dontInWorlds.contains( p.getWorld().getName() ) ).forEach(p -> {
+            BaseComponent[] bc = ComponentSerializer.parse(finalMsg.replace("%player", p.getName()));
+            p.spigot().sendMessage(bc);
         });
 
-        BaseComponent[] bc = ComponentSerializer.parse( msg );
+        BaseComponent[] bc = ComponentSerializer.parse(msg);
         if (getConfig().getBoolean("console-output")) {
             StringBuilder sb = new StringBuilder();
-            for ( BaseComponent b : bc ) {
-                sb.append( b.toLegacyText() );
+            for (BaseComponent b : bc) {
+                sb.append(b.toLegacyText());
             }
-            
-            Bukkit.getConsoleSender().sendMessage( sb.toString().replace( "%player", "Console" ) );
+
+            Bukkit.getConsoleSender().sendMessage(sb.toString().replace("%player", "Console"));
         }
     }
 
     private void loadMessages() {
-        messages = getConfig().getStringList( "messages" );
-        if ( messages == null || messages.size() == 0 ) {
-            getLogger().warning( "Could not load messages from config, setting default one" );
+        messages = getConfig().getStringList("messages");
+        if (messages == null || messages.size() == 0) {
+            getLogger().warning("Could not load messages from config, setting default one");
             messages = new ArrayList<>();
-            messages.add( "Default message: You can change this message this plugins config.yml" );
-            getConfig().set( "messages", messages );
+            messages.add("Default message: You can change this message this plugins config.yml");
+            getConfig().set("messages", messages);
             saveConfig();
         }
 
-        interval = getConfig().getInt( "interval" );
-        if ( interval == 0 ) {
-            getLogger().warning( "Could not load interval from config, setting default one (" + 20 * 60 + ")" );
+        interval = getConfig().getInt("interval");
+        if (interval == 0) {
+            getLogger().warning("Could not load interval from config, setting default one (" + 20 * 60 + ")");
             interval = 20 * 60;
-            getConfig().set( "interval", interval );
+            getConfig().set("interval", interval);
             saveConfig();
         }
 
         dontBugMe = new ArrayList<>();
-        dontBugMe.addAll( getConfig().getStringList( "dont-bug-me" ).stream().map( UUID::fromString ).collect( Collectors.toList() ) );
+        dontBugMe.addAll(getConfig().getStringList("dont-bug-me").stream().map(UUID::fromString).collect(Collectors.toList()));
+
+        dontInWorlds = new ArrayList<>();
+        dontInWorlds.addAll(new ArrayList<>(getConfig().getStringList("dont-in-worlds")));
     }
 
 
