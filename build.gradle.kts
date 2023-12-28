@@ -73,7 +73,7 @@ if (isMainBranch) {
             platforms {
                 paper {
                     jar = tasks.jar.flatMap { it.archiveFile }
-                    platformVersions = listOf("1.9.0-1.20.4")
+                    platformVersions = listOf("1.9-1.20.4")
                 }
             }
         }
