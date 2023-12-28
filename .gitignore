@@ -69,4 +69,8 @@ local.properties
 /.idea/
 SupaDupaBroadcast.iml
 
+# Gradle
+.gradle/
+build/
+
 /target/

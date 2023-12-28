@@ -1,5 +1,5 @@
 name: SupaDupaBroadcast
-version: 1.0
+version: ${version}
 api-version: 1.9
 author: MiniDigger
 main: me.MiniDigger.SupaDupaBroadcast.SupaDupaBroadcast
