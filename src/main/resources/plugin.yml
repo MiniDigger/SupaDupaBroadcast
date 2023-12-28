@@ -4,15 +4,15 @@ api-version: 1.9
 author: MiniDigger
 main: me.MiniDigger.SupaDupaBroadcast.SupaDupaBroadcast
 commands:
-    sdbrl:
-      description: 'Reloads the config from disk'
-      permission: 'sdbrl'
-    sdbadd:
-      description: 'Adds a messages to the list'
-      permission: 'sdbadd'
-    sdbint:
-      description: 'Changes the interval of messages being displayed'
-      permission: 'sdbint'
-    sbignore:
-      description: 'Toogles if you will receive the messages'
-      permission: 'sbignore'
+  sdbrl:
+    description: 'Reloads the config from disk'
+    permission: 'sdbrl'
+  sdbadd:
+    description: 'Adds a messages to the list'
+    permission: 'sdbadd'
+  sdbint:
+    description: 'Changes the interval of messages being displayed'
+    permission: 'sdbint'
+  sbignore:
+    description: 'Toogles if you will receive the messages'
+    permission: 'sbignore'

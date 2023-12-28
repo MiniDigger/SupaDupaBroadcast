@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set Up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Maven Repo
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Build With Maven
+        run: mvn -e clean package -am
+
+      - name: Upload Distributable Jar
+        id: upload-final
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: ./target/SupaDupaBroadcast.jar
