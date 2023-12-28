@@ -10,8 +10,11 @@ interval: 1200
 # Should the message should be print to the console?
 console-output: true
 
-# List with messages (now you can use a %player variable)
-messages: []
-
 # List with uuid that will not get a message
 dont-bug-me: []
+
+# List with world names where messages will not be displayed (e.g. world, world_nether, world_the_end, etc.)
+dont-in-worlds: []
+
+# List with messages (now you can use a %player variable)
+messages: []
